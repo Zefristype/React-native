@@ -10,11 +10,12 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
-  Image,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { AuthBackground } from "../../components/Auth/AuthBackground";
 
-export const LoginScreen = () => {
+const LoginScreen = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isKeyboardShowing, setIsKeyboardShowing] = useState(false);
@@ -142,7 +143,7 @@ export const LoginScreen = () => {
             >
               <Text style={styles.buttonFormText}>Sign In</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate("Register")}>
               <Text style={styles.regNavigate}>
                 Don't have an account? Sign Up
               </Text>
@@ -228,3 +229,5 @@ const styles = StyleSheet.create({
     color: "#1B4371",
   },
 });
+
+export default LoginScreen;

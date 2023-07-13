@@ -1,8 +1,13 @@
+import "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { LoginScreen } from "./Screens/LoginScreen/LoginScreen";
-import { RegisterScreen } from "./Screens/RegisterScreen/RegisterScreen";
+import LoginScreen from "./Screens/LoginScreen/LoginScreen";
+import RegisterScreen from "./Screens/RegisterScreen/RegisterScreen";
+
+const MainStack = createStackNavigator();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,9 +32,23 @@ export default function App() {
   }
 
   return (
-    <>
-      <RegisterScreen />
-      {/* <LoginScreen /> */}
-    </>
+    <NavigationContainer>
+      <MainStack.Navigator initialRouteName="Login">
+        <MainStack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </MainStack.Navigator>
+    </NavigationContainer>
   );
 }

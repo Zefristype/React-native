@@ -12,10 +12,12 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/EvilIcons";
 import { AuthBackground } from "../../components/Auth/AuthBackground";
 
-export const RegisterScreen = () => {
+const RegisterScreen = () => {
+  const navigation = useNavigation()
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -186,7 +188,7 @@ export const RegisterScreen = () => {
             >
               <Text style={styles.buttonFormText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
               <Text style={styles.regNavigate}>
                 Already have an account? Sign In
               </Text>
@@ -292,3 +294,5 @@ const styles = StyleSheet.create({
     color: "#1B4371",
   },
 });
+
+export default RegisterScreen;
