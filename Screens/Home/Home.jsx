@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
@@ -8,14 +8,29 @@ import { Ionicons } from "@expo/vector-icons";
 import PostsScreen from "../PostsScreen/PostsScreen";
 import CreatePostsScreen from "../CreatePostsScreen/CreatePostsScreen";
 import ProfileScreen from "../ProfileScreen/ProfileScreen";
+import { useLayoutEffect, useState } from "react";
 
 const Tabs = createBottomTabNavigator();
-const Home = () => {
+const Home = ({ route }) => {
+  const [tabBar, setTabBar] = useState("flex");
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    console.log(routeName);
+    if (routeName === "CreatePostsScreen") {
+      setTabBar("none");
+    } else {
+      console.log("gg");
+      setTabBar("flex");
+    }
+  }, [setTabBar, route]);
   return (
     <View style={styles.container}>
       <Tabs.Navigator
         initialRouteName="PostsScreen"
-        screenOptions={{ tabBarShowLabel: false }}
+        screenOptions={{
+          tabBarShowLabel: false,
+          tabBarStyle: { display: tabBar },
+        }}
       >
         <Tabs.Screen
           name="PostsScreen"
