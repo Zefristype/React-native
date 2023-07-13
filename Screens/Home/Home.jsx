@@ -1,8 +1,4 @@
-import {
-  StyleSheet,
-  View,
-} from "react-native";
-
+import { StyleSheet, View } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -13,18 +9,15 @@ import PostsScreen from "../PostsScreen/PostsScreen";
 import CreatePostsScreen from "../CreatePostsScreen/CreatePostsScreen";
 import ProfileScreen from "../ProfileScreen/ProfileScreen";
 
-const Tab = createBottomTabNavigator();
+const Tabs = createBottomTabNavigator();
 const Home = () => {
-
   return (
     <View style={styles.container}>
-      <Tab.Navigator
+      <Tabs.Navigator
         initialRouteName="PostsScreen"
-        screenOptions={{
-          tabBarShowLabel: false,
-        }}
+        screenOptions={{ tabBarShowLabel: false }}
       >
-        <Tab.Screen
+        <Tabs.Screen
           name="PostsScreen"
           component={PostsScreen}
           options={{
@@ -57,7 +50,7 @@ const Home = () => {
             ),
           }}
         />
-        <Tab.Screen
+        <Tabs.Screen
           name="CreatePostsScreen"
           component={CreatePostsScreen}
           options={{
@@ -84,7 +77,7 @@ const Home = () => {
             },
           }}
         />
-        <Tab.Screen
+        <Tabs.Screen
           name="ProfileScreen"
           component={ProfileScreen}
           options={{
@@ -110,7 +103,7 @@ const Home = () => {
             },
           }}
         />
-      </Tab.Navigator>
+      </Tabs.Navigator>
     </View>
   );
 };
