@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     color: "#212121",
     alignItems: "flex-end",
     marginBottom: 16,
+  
   },
   inputsWrapper: {
     width: "100%",
