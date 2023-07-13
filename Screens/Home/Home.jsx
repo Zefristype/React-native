@@ -48,6 +48,10 @@ const Home = ({ route }) => {
                 />
               </View>
             ),
+            headerStyle: {
+              borderBottomColor: "rgba(0, 0, 0, 0.30)",
+              borderBottomWidth: 1,
+            },
             headerShown: true,
             headerTitle: "Posts",
             headerTitleAlign: "center",
@@ -82,7 +86,10 @@ const Home = ({ route }) => {
                 />
               </View>
             ),
-
+            headerStyle: {
+              borderBottomColor: "rgba(0, 0, 0, 0.30)",
+              borderBottomWidth: 1,
+            },
             headerShown: true,
             headerTitle: "Create Post",
             headerTitleAlign: "center",
