@@ -1,13 +1,13 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 const CreatePostsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.imageWrapper}>
-          <TouchableOpacity>
-            <Text>Icon</Text>
+          <TouchableOpacity style={styles.circle}>
+            <FontAwesome color={"#BDBDBD"} name="camera" size={24} />
           </TouchableOpacity>
         </View>
         <Text style={{ ...styles.text, marginBottom: 32 }}>Load image</Text>
@@ -60,6 +60,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 32,
     marginBottom: 8,
+  },
+  circle: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 60,
+    height: 60,
+    borderRadius: "50%",
+    backgroundColor: "transparent",
   },
   input: {
     width: "100%",
