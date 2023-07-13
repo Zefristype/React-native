@@ -52,6 +52,7 @@ const LoginScreen = () => {
     Keyboard.dismiss();
   };
   const onSubmit = () => {
+    navigation.navigate("Home");
     console.log("Email", `${email}`, "Password", `${password}`);
   };
 
@@ -143,7 +144,7 @@ const LoginScreen = () => {
             >
               <Text style={styles.buttonFormText}>Sign In</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=> navigation.navigate("Register")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
               <Text style={styles.regNavigate}>
                 Don't have an account? Sign Up
               </Text>

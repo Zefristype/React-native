@@ -56,6 +56,7 @@ const RegisterScreen = () => {
     Keyboard.dismiss();
   };
   const onSubmit = () => {
+    navigation.navigate("Home")
     console.log(
       "Login",
       `${login}`,

@@ -6,6 +6,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import LoginScreen from "./Screens/LoginScreen/LoginScreen";
 import RegisterScreen from "./Screens/RegisterScreen/RegisterScreen";
+import Home from "./Screens/Home/Home";
 
 const MainStack = createStackNavigator();
 
@@ -44,6 +45,13 @@ export default function App() {
         <MainStack.Screen
           name="Login"
           component={LoginScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="Home"
+          component={Home}
           options={{
             headerShown: false,
           }}
