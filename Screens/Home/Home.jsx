@@ -15,11 +15,9 @@ const Home = ({ route }) => {
   const [tabBar, setTabBar] = useState("flex");
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    console.log(routeName);
     if (routeName === "CreatePostsScreen") {
       setTabBar("none");
     } else {
-      console.log("gg");
       setTabBar("flex");
     }
   }, [setTabBar, route]);
@@ -72,13 +70,14 @@ const Home = ({ route }) => {
         <Tabs.Screen
           name="CreatePostsScreen"
           component={CreatePostsScreen}
-          options={{
+          options={({ navigation }) => ({
             headerLeft: () => (
               <Feather
                 name="arrow-left"
                 size={24}
                 color="#212121"
                 style={{ marginLeft: 16 }}
+                onPress={() => navigation.goBack()}
               />
             ),
             tabBarIcon: ({ focused, size, color }) => (
@@ -105,7 +104,7 @@ const Home = ({ route }) => {
               fontSize: 17,
               alignItems: "center",
             },
-          }}
+          })}
         />
         <Tabs.Screen
           name="ProfileScreen"
