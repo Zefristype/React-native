@@ -33,7 +33,7 @@ const Home = ({ route }) => {
         <Tabs.Screen
           name="PostsScreen"
           component={PostsScreen}
-          options={{
+          options={({ navigation }) => ({
             tabBarIcon: ({ focused, size, color }) => (
               <View
                 style={styles.activeScreen}
@@ -63,9 +63,10 @@ const Home = ({ route }) => {
                 size={24}
                 color="black"
                 style={{ marginRight: 16 }}
+                onPress={() => navigation.navigate("Login")}
               />
             ),
-          }}
+          })}
         />
         <Tabs.Screen
           name="CreatePostsScreen"
