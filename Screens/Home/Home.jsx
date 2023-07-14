@@ -64,7 +64,7 @@ const Home = ({ route }) => {
                 name="exit-outline"
                 size={24}
                 color="black"
-                style={{ marginRight: 10 }}
+                style={{ marginRight: 16 }}
               />
             ),
           }}
@@ -73,6 +73,14 @@ const Home = ({ route }) => {
           name="CreatePostsScreen"
           component={CreatePostsScreen}
           options={{
+            headerLeft: () => (
+              <Feather
+                name="arrow-left"
+                size={24}
+                color="#212121"
+                style={{ marginLeft: 16 }}
+              />
+            ),
             tabBarIcon: ({ focused, size, color }) => (
               <View
                 style={styles.activeScreen}
@@ -134,7 +142,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
-   
   },
   activeScreen: {
     width: 70,
