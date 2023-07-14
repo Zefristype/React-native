@@ -61,7 +61,7 @@ const Home = ({ route }) => {
               <Ionicons
                 name="exit-outline"
                 size={24}
-                color="black"
+                color="#BDBDBD"
                 style={{ marginRight: 16 }}
                 onPress={() => navigation.navigate("Login")}
               />
