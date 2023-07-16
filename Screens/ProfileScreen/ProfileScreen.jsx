@@ -34,18 +34,27 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.postImg}></View>
             <Text style={styles.postTitle}>Forest</Text>
             <View style={styles.postInfo}>
-              <View style={styles.postComments}>
-                <Feather name="message-circle" size={24} />
+              <View style={styles.postCommentsBox}>
+                <Feather
+                  name="message-circle"
+                  style={{
+                    transform: [{ rotateZ: "270deg" }],
+                  }}
+                  color={"#FF6C00"}
+                  size={24}
+                />
+                <Text style={styles.postCommentsText}>10</Text>
               </View>
-              <View style={styles.postLikes}>
-                <Feather name="thumbs-up" size={24} />
+              <View style={styles.postLikesBox}>
+                <Feather name="thumbs-up" color={"#FF6C00"} size={24} />
+                <Text style={styles.postLikesText}>192</Text>
               </View>
-              <View style={styles.postLocation}>
-                <Feather name="map-pin" size={24} />
+              <View style={styles.postLocationBox}>
+                <Feather name="map-pin" color={"#BDBDBD"} size={24} />
+                <Text style={styles.postLocationText}>Ukraine</Text>
               </View>
             </View>
           </View>
-          
         </View>
       </View>
     </View>
@@ -112,11 +121,59 @@ const styles = StyleSheet.create({
   posts: { display: "flex", flexDirection: "column" },
   post: { width: "100%", height: 277 },
   postImg: { height: 240, backgroundColor: "blue" },
-  postTitle: {},
-  postInfo: { display: "flex", flexDirection: "row" },
-  postComments: {},
-  postLikes: {},
-  postLocation: {},
+  postTitle: {
+    marginTop: 8,
+    marginBottom: 8,
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+
+    fontWeight: "500",
+  },
+  postInfo: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+  },
+  postCommentsBox: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    marginRight: 24,
+  },
+  postLikesBox: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+  postLocationBox: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    marginLeft: "auto",
+  },
+  postCommentsText: {
+    marginLeft: 6,
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 18,
+  },
+  postLikesText: {
+    marginLeft: 6,
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 18,
+  },
+  postLocationText: {
+    marginLeft: 4,
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 18,
+    textDecorationLine: "underline",
+  },
 });
 
 export default ProfileScreen;
