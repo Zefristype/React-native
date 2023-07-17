@@ -9,18 +9,39 @@ import {
 } from "react-native";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 const CreatePostsScreen = () => {
+  const navigation = useNavigation();
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
+  const [cameraIsReady, setCameraIsReady] = useState(true);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [mapLocation, setMapLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setMapLocation(coords);
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -45,17 +66,25 @@ const CreatePostsScreen = () => {
     Keyboard.dismiss();
   };
   const takePhoto = async () => {
-    if (cameraRef) {
+    if (cameraRef && cameraIsReady) {
       const { uri } = await cameraRef.takePictureAsync();
       await MediaLibrary.createAssetAsync(uri);
       setPhoto(uri);
+      setCameraIsReady(false);
     }
   };
   const onSubmit = () => {
-    if (!photo || !title || !location) {
+    if (!photo || !title.trim() || !location.trim()) {
       console.log("Not all");
     } else {
-      console.log("Well done");
+      navigation.navigate("PostsScreen", {
+        photo,
+        title,
+        location,
+        mapLocation,
+        likes: 0,
+        comments: 0,
+      });
     }
   };
   if (hasPermission === null) {
@@ -70,7 +99,9 @@ const CreatePostsScreen = () => {
       <View style={styles.container}>
         <View style={styles.wrapper}>
           <Camera style={styles.camera} type={type} ref={setCameraRef}>
-            <Image source={{ uri: photo }} style={styles.photo} />
+            {photo && !cameraIsReady && (
+              <Image source={{ uri: photo }} style={styles.photo} />
+            )}
             <TouchableOpacity style={styles.circle} onPress={takePhoto}>
               <FontAwesome color={"#FFFFFF"} name="camera" size={24} />
             </TouchableOpacity>
@@ -92,7 +123,13 @@ const CreatePostsScreen = () => {
           </Camera>
 
           <TouchableOpacity
+            style={{ maxWidth: 100 }}
             onPress={async () => {
+              if (photo) {
+                setPhoto(null);
+                setCameraIsReady(true);
+                return;
+              }
               const { status } =
                 await ImagePicker.requestMediaLibraryPermissionsAsync();
               if (status !== "granted") {
@@ -103,11 +140,14 @@ const CreatePostsScreen = () => {
               const result = await ImagePicker.launchImageLibraryAsync();
               if (!result.canceled && result.assets.length > 0) {
                 const selectedAsset = result.assets[0];
+                setCameraIsReady(false);
                 setPhoto(selectedAsset.uri);
               }
             }}
           >
-            <Text style={{ ...styles.text, marginBottom: 32 }}>Load image</Text>
+            <Text style={{ ...styles.text, marginBottom: 32, maxWidth: 100 }}>
+              {photo ? "Reset" : "Load image"}
+            </Text>
           </TouchableOpacity>
           <TextInput
             onChangeText={setTitle}
@@ -131,8 +171,27 @@ const CreatePostsScreen = () => {
               placeholderTextColor={"#BDBDBD"}
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={onSubmit}>
-            <Text style={styles.text}>Publish</Text>
+          <TouchableOpacity
+            style={{
+              ...styles.button,
+              backgroundColor:
+                photo && title.trim() && location.trim()
+                  ? "#FF6C00"
+                  : "transparent",
+            }}
+            onPress={onSubmit}
+          >
+            <Text
+              style={{
+                ...styles.text,
+                color:
+                  photo && title.trim() && location.trim()
+                    ? "#FFFFFF"
+                    : "#BDBDBD",
+              }}
+            >
+              Publish
+            </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.buttonIcon}>
@@ -173,10 +232,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   photo: {
-    // zIndex: 10000,
     position: "absolute",
-    // top: 0,
-    // left: 0,
     width: "100%",
     height: 240,
   },

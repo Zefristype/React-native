@@ -26,6 +26,7 @@ const Home = ({ route }) => {
       <Tabs.Navigator
         initialRouteName="PostsScreen"
         screenOptions={{
+          unmountOnBlur: true,
           tabBarShowLabel: false,
           tabBarStyle: { display: tabBar },
         }}
@@ -46,6 +47,7 @@ const Home = ({ route }) => {
                 />
               </View>
             ),
+            unmountOnBlur: true,
             headerStyle: {
               borderBottomColor: "rgba(0, 0, 0, 0.30)",
               borderBottomWidth: 1,
@@ -81,6 +83,7 @@ const Home = ({ route }) => {
                 onPress={() => navigation.goBack()}
               />
             ),
+
             tabBarIcon: ({ focused, size, color }) => (
               <View
                 style={styles.activeScreen}
@@ -94,6 +97,7 @@ const Home = ({ route }) => {
                 />
               </View>
             ),
+            unmountOnBlur: true,
             headerStyle: {
               borderBottomColor: "rgba(0, 0, 0, 0.30)",
               borderBottomWidth: 1,
@@ -125,6 +129,7 @@ const Home = ({ route }) => {
                 />
               </View>
             ),
+            unmountOnBlur: true,
             headerTitle: "Profile",
             headerTitleAlign: "center",
             headerTitleStyle: {
