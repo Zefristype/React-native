@@ -9,9 +9,12 @@ import PostsScreen from "../PostsScreen/PostsScreen";
 import CreatePostsScreen from "../CreatePostsScreen/CreatePostsScreen";
 import ProfileScreen from "../ProfileScreen/ProfileScreen";
 import { useLayoutEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const Tabs = createBottomTabNavigator();
 const Home = ({ route }) => {
+  const dispatch = useDispatch();
   const [tabBar, setTabBar] = useState("flex");
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
@@ -65,7 +68,9 @@ const Home = ({ route }) => {
                 size={24}
                 color="#BDBDBD"
                 style={{ marginRight: 16 }}
-                onPress={() => navigation.navigate("Login")}
+                onPress={() => {
+                  dispatch(authSignOutUser());
+                }}
               />
             ),
           })}

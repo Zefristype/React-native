@@ -15,9 +15,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/EvilIcons";
 import { AuthBackground } from "../../components/Auth/AuthBackground";
+import { useDispatch } from "react-redux";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const RegisterScreen = () => {
-  const navigation = useNavigation()
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,16 +58,17 @@ const RegisterScreen = () => {
     setIsKeyboardShowing(false);
     Keyboard.dismiss();
   };
-  const onSubmit = () => {
-    navigation.navigate("Home")
-    console.log(
-      "Login",
-      `${login}`,
-      "Email",
-      `${email}`,
-      "Password",
-      `${password}`
-    );
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!login.trim() || !email.trim() || !password.trim()) {
+      return;
+    }
+    dispatch(authSignUpUser({ login, email, password }));
+    setEmail("");
+    setLogin("");
+    setPassword("");
+    navigation.navigate("Home");
+    Keyboard.dismiss();
   };
 
   return (
@@ -223,7 +227,6 @@ const styles = StyleSheet.create({
     color: "#212121",
     alignItems: "flex-end",
     marginBottom: 16,
-  
   },
   inputsWrapper: {
     width: "100%",

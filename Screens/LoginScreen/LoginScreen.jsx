@@ -13,8 +13,11 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AuthBackground } from "../../components/Auth/AuthBackground";
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/authOperations";
 
 const LoginScreen = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,9 +54,15 @@ const LoginScreen = () => {
     setIsKeyboardShowing(false);
     Keyboard.dismiss();
   };
-  const onSubmit = () => {
-    navigation.navigate("Home");
-    console.log("Email", `${email}`, "Password", `${password}`);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      return;
+    }
+    dispatch(authSignInUser({ email, password }));
+    setEmail("");
+    setPassword("");
+    Keyboard.dismiss();
   };
 
   return (

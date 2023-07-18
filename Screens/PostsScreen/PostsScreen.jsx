@@ -3,12 +3,17 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/auth/selectors";
 
 const PostsScreen = () => {
   const navigation = useNavigation();
   const { params } = useRoute();
+  const user = useSelector(selectUser);
+  console.log(user);
   const [posts, setPosts] = useState([]);
-  console.log(posts);
   useEffect(() => {
     if (!params) {
       return;
@@ -21,8 +26,8 @@ const PostsScreen = () => {
       <View style={styles.user}>
         <View style={styles.avatar}></View>
         <View style={styles.userInfo}>
-          <Text style={styles.username}>Example Example</Text>
-          <Text style={styles.email}>Example@gmail.com</Text>
+          <Text style={styles.username}>{user.login}</Text>
+          <Text style={styles.email}>{user.email}</Text>
         </View>
       </View>
       {posts.length !== 0 && (
