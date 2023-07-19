@@ -6,13 +6,29 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/EvilIcons";
 import { AuthBackground } from "../../components/Auth/AuthBackground";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { authSignOutUser } from "../../redux/auth/authOperations";
+import { selectUser } from "../../redux/auth/selectors";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebase/config";
 
 const ProfileScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    onSnapshot(collection(db, "posts"), (snapshot) => {
+      setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+  }, [setPosts]);
   return (
     <View style={styles.wrapper}>
       <AuthBackground />
@@ -26,36 +42,45 @@ const ProfileScreen = ({ navigation }) => {
           size={24}
           color="#BDBDBD"
           style={{ marginRight: 16, position: "absolute", top: 22, right: 16 }}
-          onPress={() => navigation.navigate("Login")}
+          onPress={() => dispatch(authSignOutUser())}
         />
-        <Text style={styles.username}>Example Example</Text>
-        <View style={styles.posts}>
-          <View style={styles.post}>
-            <View style={styles.postImg}></View>
-            <Text style={styles.postTitle}>Forest</Text>
-            <View style={styles.postInfo}>
-              <View style={styles.postCommentsBox}>
-                <Feather
-                  name="message-circle"
-                  style={{
-                    transform: [{ rotateZ: "270deg" }],
-                  }}
-                  color={"#FF6C00"}
-                  size={24}
-                />
-                <Text style={styles.postCommentsText}>10</Text>
+        <Text style={styles.username}>{user.login}</Text>
+        <ScrollView
+          style={styles.posts}
+          contentContainerStyle={{ paddingBottom: 150 }}
+        >
+          {posts.map((post) => {
+            return (
+              <View key={post.id} style={styles.post}>
+                <Image source={{ uri: post.image }} style={styles.postImg} />
+                <Text style={styles.postTitle}>{post.title}</Text>
+                <View style={styles.postInfo}>
+                  <View style={styles.postCommentsBox}>
+                    <Feather
+                      name="message-circle"
+                      style={{
+                        transform: [{ rotateZ: "270deg" }],
+                      }}
+                      color={"#FF6C00"}
+                      size={24}
+                    />
+                    <Text style={styles.postCommentsText}>{post.comments}</Text>
+                  </View>
+                  <View style={styles.postLikesBox}>
+                    <Feather name="thumbs-up" color={"#FF6C00"} size={24} />
+                    <Text style={styles.postLikesText}>{post.likes}</Text>
+                  </View>
+                  <View style={styles.postLocationBox}>
+                    <Feather name="map-pin" color={"#BDBDBD"} size={24} />
+                    <Text style={styles.postLocationText}>
+                      {post.allLocations.location}
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <View style={styles.postLikesBox}>
-                <Feather name="thumbs-up" color={"#FF6C00"} size={24} />
-                <Text style={styles.postLikesText}>192</Text>
-              </View>
-              <View style={styles.postLocationBox}>
-                <Feather name="map-pin" color={"#BDBDBD"} size={24} />
-                <Text style={styles.postLocationText}>Ukraine</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+            );
+          })}
+        </ScrollView>
       </View>
     </View>
   );
@@ -118,9 +143,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     letterSpacing: 0.3,
   },
-  posts: { display: "flex", flexDirection: "column" },
-  post: { width: "100%", height: 277 },
-  postImg: { height: 240, backgroundColor: "blue" },
+  posts: { display: "flex", flexDirection: "column", height: "100%" },
+  post: { width: "100%", height: 277, marginBottom: 68 },
+  postImg: { height: 240, borderRadius: 8 },
   postTitle: {
     marginTop: 8,
     marginBottom: 8,

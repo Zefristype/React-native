@@ -1,6 +1,13 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList,
+  ScrollView,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -10,16 +17,14 @@ import { selectUser } from "../../redux/auth/selectors";
 
 const PostsScreen = () => {
   const navigation = useNavigation();
-  const { params } = useRoute();
   const user = useSelector(selectUser);
-  console.log(user);
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
-    if (!params) {
-      return;
-    }
-    setPosts((prevState) => [...prevState, params]);
-  }, [params, setPosts]);
+    onSnapshot(collection(db, "posts"), (snapshot) => {
+      setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+  }, [setPosts]);
 
   return (
     <View style={styles.container}>
@@ -31,16 +36,19 @@ const PostsScreen = () => {
         </View>
       </View>
       {posts.length !== 0 && (
-        <View style={styles.posts}>
+        <ScrollView
+          style={styles.posts}
+          contentContainerStyle={{ paddingBottom: 140 }}
+        >
           {posts.map((post) => {
             return (
-              <View key={post.title} style={styles.post}>
-                <Image source={{ uri: post.photo }} style={styles.postImg} />
+              <View key={post.id} style={styles.post}>
+                <Image source={{ uri: post.image }} style={styles.postImg} />
                 <Text style={styles.postTitle}>{post.title}</Text>
                 <View style={styles.postInfo}>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("CommentsScreen", post.photo)
+                      navigation.navigate("CommentsScreen", post.id)
                     }
                   >
                     <View style={styles.postCommentsBox}>
@@ -59,14 +67,17 @@ const PostsScreen = () => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("MapScreen", post.mapLocation)
+                      navigation.navigate(
+                        "MapScreen",
+                        post.allLocations.mapLocation
+                      )
                     }
                     style={{ marginLeft: "auto" }}
                   >
                     <View style={styles.postLocationBox}>
                       <Feather name="map-pin" color={"#BDBDBD"} size={24} />
                       <Text style={styles.postLocationText}>
-                        {post.location}
+                        {post.allLocations.location}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -74,7 +85,7 @@ const PostsScreen = () => {
               </View>
             );
           })}
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -122,8 +133,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  posts: { display: "flex", flexDirection: "column" },
-  post: { width: "100%", height: 277 },
+  posts: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  },
+  post: { width: "100%", height: 277, marginBottom: 68 },
   postImg: { height: 240, borderRadius: 8 },
   postTitle: {
     marginTop: 8,

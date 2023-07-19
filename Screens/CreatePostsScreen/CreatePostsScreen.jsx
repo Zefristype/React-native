@@ -7,6 +7,8 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from "react-native";
+import uuid from "react-native-uuid";
+import { useSelector } from "react-redux";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import { useEffect, useState } from "react";
@@ -15,8 +17,15 @@ import * as MediaLibrary from "expo-media-library";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
+import { collection, addDoc } from "firebase/firestore";
+import { storage, db } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { selectUser } from "../../redux/auth/selectors";
+import { async } from "@firebase/util";
 
 const CreatePostsScreen = () => {
+  const { userId } = useSelector(selectUser);
+
   const navigation = useNavigation();
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
@@ -76,17 +85,44 @@ const CreatePostsScreen = () => {
   const onSubmit = () => {
     if (!photo || !title.trim() || !location.trim()) {
       console.log("Not all");
-    } else {
-      navigation.navigate("PostsScreen", {
-        photo,
+      return;
+    }
+    uploadPostToServer();
+    navigation.navigate("PostsScreen");
+  };
+
+  const uploadPostToServer = async () => {
+    try {
+      const image = await uploadPhotoToServer();
+      const docRef = await addDoc(collection(db, "posts"), {
+        image,
         title,
-        location,
-        mapLocation,
+        allLocations: { mapLocation, location },
         likes: 0,
         comments: 0,
+        userId,
       });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      throw e;
     }
   };
+
+  const uploadPhotoToServer = async () => {
+    const responce = await fetch(photo);
+    const file = await responce.blob();
+
+    const uniqueId = uuid.v4();
+
+    const storageRef = await ref(storage, `images/${uniqueId}`);
+    await uploadBytesResumable(storageRef, file);
+
+    const getImageUrl = await getDownloadURL(storageRef);
+
+    return getImageUrl;
+  };
+
   if (hasPermission === null) {
     return <View />;
   }
