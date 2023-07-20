@@ -8,6 +8,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
+import uuid from "react-native-uuid";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -48,8 +49,14 @@ const ProfileScreen = () => {
       <AuthBackground />
       <View style={styles.container}>
         <View style={styles.avatarBox}>
-          <Icon name="plus" style={styles.avatarAdd} size={35} />
-          <View style={styles.avatarAddBackground}></View>
+          <TouchableOpacity>
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 16 }}
+              source={{ uri: user.avatar }}
+            />
+            <Icon name="plus" style={styles.avatarAdd} size={35} />
+            <View style={styles.avatarAddBackground}></View>
+          </TouchableOpacity>
         </View>
         <Ionicons
           name="exit-outline"
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -45 }, { translateY: -60 }],
     width: 120,
     height: 120,
-    backgroundColor: "#4400ff",
+    backgroundColor: "#000000",
     borderRadius: 16,
   },
   avatarAdd: {

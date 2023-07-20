@@ -18,6 +18,10 @@ import { AuthBackground } from "../../components/Auth/AuthBackground";
 import { useDispatch } from "react-redux";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 import * as ImagePicker from "expo-image-picker";
+import uuid from "react-native-uuid";
+import { collection, addDoc } from "firebase/firestore";
+import { storage, db } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 const RegisterScreen = () => {
   const dispatch = useDispatch();
@@ -60,16 +64,33 @@ const RegisterScreen = () => {
     setIsKeyboardShowing(false);
     Keyboard.dismiss();
   };
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (!login.trim() || !email.trim() || !password.trim()) {
       return;
     }
-    dispatch(authSignUpUser({ login, email, password }));
+    const avatarUrl = await uploadAvatarToServer();
+    dispatch(authSignUpUser({ login, email, password, avatar: avatarUrl }));
     setEmail("");
     setLogin("");
     setPassword("");
     Keyboard.dismiss();
+  };
+
+  const uploadAvatarToServer = async () => {
+    if (!avatar) {
+      return null;
+    }
+    const responce = await fetch(avatar);
+    const file = await responce.blob();
+
+    const uniqueId = uuid.v4();
+
+    const storageRef = ref(storage, `avatars/${uniqueId}`);
+    await uploadBytesResumable(storageRef, file);
+
+    const getImageUrl = await getDownloadURL(storageRef);
+    return getImageUrl;
   };
 
   return (

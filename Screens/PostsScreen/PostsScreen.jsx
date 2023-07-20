@@ -28,7 +28,12 @@ const PostsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.user}>
-        <View style={styles.avatar}></View>
+        <View style={styles.avatar}>
+          <Image
+            style={{ width: "100%", height: "100%", borderRadius: 16 }}
+            source={{ uri: user.avatar }}
+          />
+        </View>
         <View style={styles.userInfo}>
           <Text style={styles.username}>{user.login}</Text>
           <Text style={styles.email}>{user.email}</Text>
@@ -107,7 +112,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 16,
 
-    backgroundColor: "blue",
+    backgroundColor: "#000000",
   },
   userInfo: {
     display: "flex",

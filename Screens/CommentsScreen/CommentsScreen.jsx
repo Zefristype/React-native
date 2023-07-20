@@ -28,11 +28,11 @@ import {
   getDoc,
 } from "firebase/firestore";
 import uuid from "react-native-uuid";
-import { startOfToday, format } from "date-fns";
+import {  format } from "date-fns";
 
 const CommentsScreen = () => {
   const { params: postId } = useRoute();
-  const { login } = useSelector(selectUser);
+  const { login, userId } = useSelector(selectUser);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
   const [post, setPost] = useState(null);
@@ -47,7 +47,7 @@ const CommentsScreen = () => {
     const postsCollection = collection(db, "posts");
     const newPostRef = doc(postsCollection, postId);
     const newCollection = collection(newPostRef, "comments");
-    await addDoc(newCollection, { comment, login, time });
+    await addDoc(newCollection, { comment, login, userId, time });
     const snapshot = await getCountFromServer(newCollection);
     updatePostCommentsCount(snapshot.data().count.toString());
     Keyboard.dismiss();
