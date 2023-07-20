@@ -15,7 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/auth/selectors";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { db } from "../../firebase/config";
 import {
@@ -28,11 +28,11 @@ import {
   getDoc,
 } from "firebase/firestore";
 import uuid from "react-native-uuid";
-import {  format } from "date-fns";
+import { format } from "date-fns";
 
 const CommentsScreen = () => {
   const { params: postId } = useRoute();
-  const { login, userId } = useSelector(selectUser);
+  const { login, userId, avatar } = useSelector(selectUser);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
   const [post, setPost] = useState(null);
@@ -47,7 +47,7 @@ const CommentsScreen = () => {
     const postsCollection = collection(db, "posts");
     const newPostRef = doc(postsCollection, postId);
     const newCollection = collection(newPostRef, "comments");
-    await addDoc(newCollection, { comment, login, userId, time });
+    await addDoc(newCollection, { comment, login, userId, avatar, time });
     const snapshot = await getCountFromServer(newCollection);
     updatePostCommentsCount(snapshot.data().count.toString());
     Keyboard.dismiss();
@@ -124,18 +124,33 @@ const CommentsScreen = () => {
         data={allComments}
         renderItem={({ item }) => {
           return (
-            <View key={uuid.v4()} style={styles.comment}>
+            <View
+              key={uuid.v4()}
+              style={{
+                ...styles.comment,
+                flexDirection: userId === item.userId ? "row" : "row-reverse",
+              }}
+            >
               <View style={styles.textWrapper}>
                 <Text style={styles.text}>{item.comment}</Text>
-                <Text style={styles.data}>{item.time}</Text>
+                <Text
+                  style={{
+                    ...styles.data,
+                    textAlign: userId === item.userId ? "left" : "right",
+                  }}
+                >
+                  {item.time}
+                </Text>
               </View>
-              <View
+              <Image
                 style={{
                   ...styles.avatar,
-                  backgroundColor: "blue",
-                  marginLeft: 16,
+                  backgroundColor: "#000000",
+                  marginLeft: userId === item.userId ? 16 : 0,
+                  marginRight: userId === item.userId ? 16 : 0,
                 }}
-              ></View>
+                source={{ uri: item.avatar }}
+              />
             </View>
           );
         }}
