@@ -121,6 +121,11 @@ const CommentsScreen = () => {
         <Image style={styles.postImg} source={{ uri: post.image }} />
       )}
       <FlatList
+        contentContainerStyle={{
+          display: "flex",
+          alignItems: "center",
+          flexGrow: 1,
+        }}
         data={allComments}
         renderItem={({ item }) => {
           return (
@@ -147,14 +152,13 @@ const CommentsScreen = () => {
                   ...styles.avatar,
                   backgroundColor: "#000000",
                   marginLeft: userId === item.userId ? 16 : 0,
-                  marginRight: userId === item.userId ? 16 : 0,
+                  marginRight: userId !== item.userId ? 16 : 0,
                 }}
                 source={{ uri: item.avatar }}
               />
             </View>
           );
         }}
-        contentContainerStyle={{ flexGrow: 1 }}
       />
       <View style={{ position: "relative", marginBottom: 16 }}>
         <TextInput
@@ -208,14 +212,12 @@ const styles = StyleSheet.create({
   },
   comment: {
     display: "flex",
-    flexDirection: "row",
-    width: 299,
     marginBottom: 24,
   },
   avatar: { width: 28, height: 28, borderRadius: 28 / 2 },
   textWrapper: {
     display: "flex",
-    width: "100%",
+    width: 299,
     padding: 16,
   },
   text: {
