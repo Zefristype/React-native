@@ -21,7 +21,6 @@ import { collection, addDoc } from "firebase/firestore";
 import { storage, db } from "../../firebase/config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { selectUser } from "../../redux/auth/selectors";
-import { async } from "@firebase/util";
 
 const CreatePostsScreen = () => {
   const { userId } = useSelector(selectUser);

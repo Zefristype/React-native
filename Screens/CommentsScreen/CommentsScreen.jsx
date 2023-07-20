@@ -7,12 +7,15 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
+  TextInput,
+  TouchableWithoutFeedback,
+  FlatList,
+  SafeAreaView,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/auth/selectors";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { TextInput } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { db } from "../../firebase/config";
 import {
@@ -20,9 +23,12 @@ import {
   addDoc,
   doc,
   onSnapshot,
+  updateDoc,
   getCountFromServer,
   getDoc,
 } from "firebase/firestore";
+import uuid from "react-native-uuid";
+import { startOfToday, format } from "date-fns";
 
 const CommentsScreen = () => {
   const { params: postId } = useRoute();
@@ -36,12 +42,15 @@ const CommentsScreen = () => {
     if (!comment.trim()) {
       return;
     }
+
+    const time = format(new Date(), "dd MMMM, yyyy | HH:mm");
     const postsCollection = collection(db, "posts");
     const newPostRef = doc(postsCollection, postId);
     const newCollection = collection(newPostRef, "comments");
-
-    await addDoc(newCollection, { comment, login });
-
+    const snapshot = await getCountFromServer(newCollection);
+    updatePostCommentsCount(snapshot.data().count.toString());
+    await addDoc(newCollection, { comment, login, time });
+    Keyboard.dismiss();
     setComment("");
   };
 
@@ -63,6 +72,16 @@ const CommentsScreen = () => {
       }
     } catch (error) {
       console.error("Error fetching post details:", error);
+    }
+  };
+
+  const updatePostCommentsCount = async (commentsCount) => {
+    const postRef = doc(db, "posts", postId);
+    try {
+      await updateDoc(postRef, { comments: commentsCount });
+      console.log("Post updated successfully!");
+    } catch (error) {
+      console.error("Error updating post:", error);
     }
   };
 
@@ -91,65 +110,69 @@ const CommentsScreen = () => {
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      style={{ flex: 1 }}
+    <View
+      onPress={pressHandler}
+      style={{
+        ...styles.container,
+        paddingBottom: isKeyboardShowing ? 350 : 16,
+      }}
     >
-      <View style={styles.container}>
-        {post?.image && (
-          <Image style={styles.postImg} source={{ uri: post.image }} />
-        )}
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          {allComments.map((item) => {
-            return (
-              <View key={item.comment} style={styles.comment}>
-                <View style={styles.textWrapper}>
-                  <Text style={styles.text}>{item.comment}</Text>
-                  <Text style={styles.data}>09 June, 2020 | 08:40</Text>
-                </View>
-                <View
-                  style={{
-                    ...styles.avatar,
-                    backgroundColor: "blue",
-                    marginLeft: 16,
-                  }}
-                ></View>
+      {post?.image && (
+        <Image style={styles.postImg} source={{ uri: post.image }} />
+      )}
+      <FlatList
+        data={allComments}
+        renderItem={({ item }) => {
+          return (
+            <View key={uuid.v4()} style={styles.comment}>
+              <View style={styles.textWrapper}>
+                <Text style={styles.text}>{item.comment}</Text>
+                <Text style={styles.data}>{item.time}</Text>
               </View>
-            );
-          })}
-        </ScrollView>
-        <View style={{ position: "relative", marginBottom: 16 }}>
-          <TextInput
-            onChangeText={setComment}
-            placeholder="Comment..."
-            placeholderTextColor={"#BDBDBD"}
-            style={styles.input}
+              <View
+                style={{
+                  ...styles.avatar,
+                  backgroundColor: "blue",
+                  marginLeft: 16,
+                }}
+              ></View>
+            </View>
+          );
+        }}
+        contentContainerStyle={{ flexGrow: 1 }}
+      />
+      <View style={{ position: "relative", marginBottom: 16 }}>
+        <TextInput
+          onChangeText={setComment}
+          placeholder="Comment..."
+          placeholderTextColor={"#BDBDBD"}
+          style={styles.input}
+          value={comment}
+        />
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            top: 19,
+            right: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 34,
+            height: 34,
+            backgroundColor: "#FF6C00",
+            borderRadius: 34 / 2,
+          }}
+          onPress={onSubmit}
+        >
+          <Feather
+            name="arrow-left"
+            size={25}
+            color={"#FFFFFF"}
+            style={{ transform: [{ rotate: "90deg" }] }}
           />
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              top: 19,
-              right: 12,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 34,
-              height: 34,
-              backgroundColor: "#FF6C00",
-              borderRadius: 34 / 2,
-            }}
-            onPress={onSubmit}
-          >
-            <Feather
-              name="arrow-left"
-              size={25}
-              color={"#FFFFFF"}
-              style={{ transform: [{ rotate: "90deg" }] }}
-            />
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -199,7 +222,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     borderRadius: 30,
-    color: "#BDBDBD",
+    color: "#212121",
     textAlign: "right",
     marginTop: 8,
     fontFamily: "Roboto-Regular",

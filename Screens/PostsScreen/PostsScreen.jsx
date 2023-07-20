@@ -25,7 +25,6 @@ const PostsScreen = () => {
       setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
   }, [setPosts]);
-
   return (
     <View style={styles.container}>
       <View style={styles.user}>

@@ -67,7 +67,6 @@ const RegisterScreen = () => {
     setEmail("");
     setLogin("");
     setPassword("");
-    navigation.navigate("Home");
     Keyboard.dismiss();
   };
 
