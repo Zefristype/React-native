@@ -16,19 +16,33 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 import { selectUser } from "../../redux/auth/selectors";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    onSnapshot(collection(db, "posts"), (snapshot) => {
-      setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  const getUserPosts = async () => {
+    const q = await query(
+      collection(db, "posts"),
+      where("userId", "==", user.userId)
+    );
+
+    onSnapshot(q, (snapshot) => {
+      setPosts(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+      );
     });
-  }, [setPosts]);
+  };
+
+  useEffect(() => {
+    getUserPosts();
+  }, []);
   return (
     <View style={styles.wrapper}>
       <AuthBackground />

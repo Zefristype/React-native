@@ -17,10 +17,12 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import { AuthBackground } from "../../components/Auth/AuthBackground";
 import { useDispatch } from "react-redux";
 import { authSignUpUser } from "../../redux/auth/authOperations";
+import * as ImagePicker from "expo-image-picker";
 
 const RegisterScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [avatar, setAvatar] = useState(null);
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -92,8 +94,27 @@ const RegisterScreen = () => {
             }}
           >
             <View style={styles.avatarBox}>
-              <Image />
-              <Icon name="plus" style={styles.avatarAdd} size={35} />
+              <TouchableOpacity
+                onPress={async () => {
+                  const { status } =
+                    await ImagePicker.requestMediaLibraryPermissionsAsync();
+                  if (status !== "granted") {
+                    console.log("Permission denied");
+                    return;
+                  }
+                  const result = await ImagePicker.launchImageLibraryAsync();
+                  if (!result.canceled && result.assets.length > 0) {
+                    const selectedAsset = result.assets[0];
+                    setAvatar(selectedAsset.uri);
+                  }
+                }}
+              >
+                <Image
+                  source={{ uri: avatar }}
+                  style={{ width: "100%", height: "100%", borderRadius: 16 }}
+                />
+                <Icon name="plus" style={styles.avatarAdd} size={35} />
+              </TouchableOpacity>
             </View>
 
             <Text style={styles.formTitle}>Sign Up</Text>

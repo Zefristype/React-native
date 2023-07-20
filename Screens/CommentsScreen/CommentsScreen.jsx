@@ -47,9 +47,9 @@ const CommentsScreen = () => {
     const postsCollection = collection(db, "posts");
     const newPostRef = doc(postsCollection, postId);
     const newCollection = collection(newPostRef, "comments");
+    await addDoc(newCollection, { comment, login, time });
     const snapshot = await getCountFromServer(newCollection);
     updatePostCommentsCount(snapshot.data().count.toString());
-    await addDoc(newCollection, { comment, login, time });
     Keyboard.dismiss();
     setComment("");
   };
