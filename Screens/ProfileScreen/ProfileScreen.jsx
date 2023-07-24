@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginBottom: 33,
     color: "#212121",
     textAlign: "center",
-    fontAamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 30,
     fontWeight: "500",
     letterSpacing: 0.3,

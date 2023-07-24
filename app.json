@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "myNewProject",
-    "slug": "myNewProject",
+    "name": "MobileApp",
+    "slug": "MobileApp",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -22,14 +22,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rojdion.myNewProject"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "package": "com.rojdion.MobileApp"
     },
     "extra": {
       "eas": {
-        "projectId": "04ecf8ca-b54f-4e13-880f-028a1356c8f3"
+        "projectId": "bfacfdcf-e6f1-4aeb-a239-a63073cfe210"
       }
     }
   }
