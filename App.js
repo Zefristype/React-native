@@ -1,8 +1,8 @@
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
-
+import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { store, persistor } from "./redux/store";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import Main from "./components/Main/Main";
@@ -32,9 +32,11 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Main />
-      </NavigationContainer>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Main />
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 }

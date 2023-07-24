@@ -55,6 +55,7 @@ export const authSignInUser =
           userId: user.uid,
           login: user.displayName,
           email: user.email,
+          avatar: user.photoURL,
         })
       );
       dispatch(authStateChange({ stateChange: true }));
@@ -94,7 +95,7 @@ export const authStateChangeUser = () => async (dispatch) => {
           userId: user.uid,
           login: user.displayName,
           email: user.email,
-          avatar: user.photoURL,
+          avatar: user.photoURL ? user.photoURL : null,
         })
       ),
         dispatch(authStateChange({ stateChange: true }));

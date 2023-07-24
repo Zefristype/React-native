@@ -37,7 +37,7 @@ const CommentsScreen = () => {
   const [allComments, setAllComments] = useState([]);
   const [post, setPost] = useState(null);
   const [isKeyboardShowing, setIsKeyboardShowing] = useState(false);
-
+  console.log(avatar);
   const onSubmit = async () => {
     if (!comment.trim()) {
       return;
